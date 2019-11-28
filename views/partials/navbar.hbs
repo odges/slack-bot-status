@@ -1,0 +1,20 @@
+<nav class="blue darken-4">
+  <div class="nav-wrapper">
+    <a href="/" class="brand-logo">Вопросы бота</a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+
+      {{#if isIndex}}
+      <li class="active"><a href="/">Список</a></li>
+      {{else}}
+      <li><a href="/">Список</a></li>
+      {{/if}}
+
+      {{#if isCreate}}
+      <li class="active"><a href="/create">Создание</a></li>
+      {{else}}
+      <li><a href="/create">Создание</a></li>
+      {{/if}}
+
+    </ul>
+  </div>
+</nav>

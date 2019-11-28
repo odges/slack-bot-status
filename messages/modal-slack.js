@@ -1,79 +1,45 @@
 require('dotenv').config();
+const Question = require('../models/Question');
 
-const Modal = {
-    token: process.env.SLACK_AUTH_TOKEN,
-    view: JSON.stringify({
-	"type": "modal",
-	"title": {
-		"type": "plain_text",
-		"text": "Оставить статус",
-		"emoji": true
-	},
-	"submit": {
-		"type": "plain_text",
-		"text": "Отправить",
-		"emoji": true
-	},
-	"close": {
-		"type": "plain_text",
-		"text": "Отмена",
-		"emoji": true
-	},
-	"blocks": [
-		{
-            "type": "input",
-            "block_id": "yesterday_block",
-			"element": {
-                "action_id": "yesterday",
-				"type": "plain_text_input"
-			},
-			"label": {
+const modalQuestions = async () => {
+	const questions = await Question.find({})
+	return {
+		token: process.env.SLACK_AUTH_TOKEN,
+		view: JSON.stringify({
+			"type": "modal",
+			"title": {
 				"type": "plain_text",
-				"text": "Что делали вчера",
+				"text": "Оставить статус",
 				"emoji": true
-			}
-		},
-		{
-            "type": "input",
-            "block_id": "today_block",
-			"element": {
-                "action_id": "today",
-				"type": "plain_text_input"
 			},
-			"label": {
+			"submit": {
 				"type": "plain_text",
-				"text": "Что планируете делать сегодня",
+				"text": "Отправить",
 				"emoji": true
-			}
-		},
-		{
-            "type": "input",
-            "block_id": "problems_block",
-			"element": {
-                "action_id": "problems",
-				"type": "plain_text_input"
 			},
-			"label": {
+			"close": {
 				"type": "plain_text",
-				"text": "Есть проблема с текущими задачами?",
+				"text": "Отмена",
 				"emoji": true
-			}
-		},
-		{
-            "type": "input",
-            "block_id": "tasks_block",
-			"element": {
-                "action_id": "tasks",
-				"type": "plain_text_input"
 			},
-			"label": {
-				"type": "plain_text",
-				"text": "Хватает задач на неделю?",
-				"emoji": true
-			}
-		}
-    ]}
-    )
+			"blocks": questions.map((element) => {
+				return {
+					"type": "input",
+					"block_id": element._id + "_block",
+					"element": {
+						"action_id": element._id,
+						"type": "plain_text_input"
+					},
+					"label": {
+						"type": "plain_text",
+						"text": element.text,
+						"emoji": true
+					},
+					"optional": element.required
+				}
+			})
+		})
+	}
 }
 
-module.exports = Modal;
+module.exports = modalQuestions;

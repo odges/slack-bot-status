@@ -1,22 +1,14 @@
 const { Schema, model } = require('mongoose')
 
 const schema = new Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  completed: {
-    type: Boolean,
-    default: false
-  },
   user: {
     type: Schema.Types.ObjectId, 
     ref: 'User'
   },
   answers: [
       {
-        type: String, 
-        required: false
+        type: Schema.Types.ObjectId, 
+        ref: 'Answer'
       }
   ],
   date: {

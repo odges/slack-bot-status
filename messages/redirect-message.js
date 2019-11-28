@@ -1,15 +1,18 @@
 require('dotenv').config();
 const User = require('../models/User');
+const Question = require('../models/Question');
 
-// default message - edit to include actual ToS
-const redirectMessage = async (channel, answers, user) => {
-    const problems = answers.problems_block.problems.value;
-    const tasks = answers.tasks_block.tasks.value;
-    const today = answers.today_block.today.value;
-    const yesterday = answers.yesterday_block.yesterday.value;
-    console.log(user)
+const redirectMessage = async (channel, quesitonAnswer, user) => {
+    const que = await Question.find({});
+    let text = '';
+
+    for (obj of quesitonAnswer){
+        let question = que.filter((element) => element.id === obj.question)
+        text += "* " + question[0].text + ":*\n " + obj.answer + "\n"
+    }
+
     const userObj = await User.find({ slack_id: user.id})
-    console.log(userObj[0].name)
+
     return {
         token: process.env.SLACK_AUTH_TOKEN,
         channel: channel,
@@ -27,7 +30,7 @@ const redirectMessage = async (channel, answers, user) => {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*Что делали вчера:*\n " + yesterday + "\n*Что планируете делать сегодня:*\n"+ today + "\n*Есть проблема с текущими задачами?:*\n "+ problems +"\n*Хватает задач на неделю?*\n" + tasks
+                        "text": text
                     },
                 }
             ])

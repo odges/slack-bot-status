@@ -1,24 +1,28 @@
 const { Router } = require('express');
 const message = require('../messages/actions-select');
-const Modal = require('../messages/modal-slack');
-const router = Router()
+const modalQuestions = require('../messages/modal-slack');
+const slackRoutes = Router()
 const request = require("request");
 const User = require('../models/User');
 const redirectMessage = require('../messages/redirect-message');
+const Answers = require('../models/Answer');
+const Status = require('../models/Status');
 
-router.post('/', (req, res) => {  
+slackRoutes.post('/slack/actions', (req, res) => {  
     const data = {
         form: {
             channel: req.body.user_id,
             ...message,
         }
     };
-    request.post('https://slack.com/api/chat.postMessage', data, function (error, response, body) {
-        res.json();
-    });
+    request.post(
+        'https://slack.com/api/chat.postMessage',
+        data,
+        (error, response, body) => res.json()
+    );
 });
 
-router.post('/slack/events', async (req, res) => {
+slackRoutes.post('/slack/events', async (req, res) => {
     const { event } = req.body;
     switch(event.type){
         case 'member_joined_channel':
@@ -32,21 +36,38 @@ router.post('/slack/events', async (req, res) => {
     res.json()
 });
 
-router.post('/interactive', async (req, res) => {
+slackRoutes.post('/slack/interactive', async (req, res) => {
     // интерактивные элементы диалога
     const { type } = JSON.parse(req.body.payload);
-    console.log(type)
+
     switch (type){
         case 'view_submission':
             // данные из диалогового окна
             const { view, user } = JSON.parse(req.body.payload)
-            console.log(JSON.parse(req.body.payload))
-            console.log(view.state.values)
-            messageRedirect = await redirectMessage('CQXN7117X', view.state.values, user)
-            request.post('https://slack.com/api/chat.postMessage', {form: messageRedirect}, function (error, response, body) {
-                console.log(response.body)
-                res.json();
+            const db_user = await User.find({slack_id: user.id})
+            const status = new Status({
+                user: db_user[0]._id
             })
+            const quesitonAnswer = new Array;
+            const answers = new Array;
+            for (let [key, value] of Object.entries(view.state.values)){
+                let id = Object.keys(value)[0];
+                let obj = Object.values(value)[0];
+                quesitonAnswer.push({answer: obj.value, question: id})
+                let answer = new Answers({text: obj.value, question: id})
+                await answer.save()
+                answers.push(answer.id)
+                
+            }
+            status.answers.push(...answers)
+            await status.save()
+
+            messageRedirect = await redirectMessage('GQV78N4TA', quesitonAnswer, user)
+            request.post(
+                'https://slack.com/api/chat.postMessage', 
+                {form: messageRedirect},
+                (error, response, body) => res.json()
+            )
             break
         case 'block_actions':
             const actions = JSON.parse(req.body.payload).actions[0]
@@ -57,9 +78,12 @@ router.post('/interactive', async (req, res) => {
                     break
                 case 'give_status':
                     const { trigger_id } = JSON.parse(req.body.payload);
-                    request.post('https://slack.com/api/views.open', { form: { trigger_id, ...Modal } }, function (error, response, body) {
-                        res.json();
-                    });
+                    const Modal = await modalQuestions();
+                    request.post(
+                        'https://slack.com/api/views.open', 
+                        { form: { trigger_id, ...Modal } }, 
+                        (error, response, body) => res.json()
+                    );
                     break
                 default:
                     break
@@ -67,6 +91,7 @@ router.post('/interactive', async (req, res) => {
         default:
             break
     }
+    res.json()
 })
 
-module.exports = router;
+module.exports = slackRoutes;

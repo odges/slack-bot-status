@@ -10,16 +10,18 @@ const Initial_user_db = async () => {
     };
     request.post('https://slack.com/api/users.list', data, async function (error, response, body) {
         const { members } = JSON.parse(response.body);
-        members.map(async (element, counter)=>{
-            let { is_bot } = element;
+        members.map(async (element)=>{
+            let { is_bot, deleted } = element;
             let exist = await User.exists({slack_id: element.id});
             if ( !is_bot ){
                 if(!exist){
-                    let user = new User({
-                        slack_id: element.id,
-                        name: element.real_name
-                    })
-                    await user.save();
+                    if (!deleted){
+                        let user = new User({
+                            slack_id: element.id,
+                            name: element.real_name
+                        })
+                        await user.save();    
+                    }
                 }
             }
         })     

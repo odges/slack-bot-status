@@ -1,0 +1,18 @@
+<h2>Вопросы</h2>
+
+{{#if questions.length}}
+<ul>
+  {{#each questions}}
+  <li class="todo">
+    <div>{{text}} {{#if required}} (обязательный) {{else}} (необязательный) {{/if}}</div>
+    <form action="/delete" method="POST">
+      <input type="text" name="id" value="{{_id}}" hidden >
+      <button type="submit" class="btn btn-danger">Удалить</button>
+    </form>
+  </li>
+  </br>
+  {{/each}}
+</ul>
+{{else}}
+<p>нет вопросов</p>
+{{/if}}

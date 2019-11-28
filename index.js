@@ -2,18 +2,33 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const router = require('./router/slack-api');
-const Initial_user_db = require('./utils/init_users_db');
-// Creates express app
+const slackRoutes = require('./router/slack-api');
+const Initial_user_db = require('./tasks/init_users_db');
+const schedule = require('node-schedule');
+const alertAllUsers = require('./tasks/dailyAlerts');
+const exphbs = require('express-handlebars')
+const path = require('path')
+const router = require('./router/routes')
 const app = express();
-// The port used for Express server
 const PORT = 3000;
-// Starts server
- 
+
+const hbs = exphbs.create({
+  defaultLayout: 'main',
+  extname: 'hbs'
+})
+
+app.engine('hbs', hbs.engine)
+app.set('view engine', 'hbs')
+app.set('views', 'views')
+app.use(express.static(path.join(__dirname, 'public')))
+
+schedule.scheduleJob('30 9 * * 1-5', () => alertAllUsers()); 
+
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(bodyParser.json());
 
+app.use(slackRoutes)
 app.use(router)
 
 async function start() {
