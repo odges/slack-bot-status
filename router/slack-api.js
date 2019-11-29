@@ -23,18 +23,17 @@ slackRoutes.post('/slack/actions', (req, res) => {
 });
 
 slackRoutes.post('/slack/events', async (req, res) => {
-    // const { event } = req.body;
-    // switch(event.type){
-    //     case 'member_joined_channel':
-    //         if (!User.exists({slack_id: event.user})){
-    //             const user = new User({
-    //                 slack_id: event.user
-    //             });
-    //             await user.save();
-    //         }
-    // }
-    console.log(req.body)
-    res.json(req.body)
+    const { event } = req.body;
+    switch(event.type){
+        case 'member_joined_channel':
+            if (!User.exists({slack_id: event.user})){
+                const user = new User({
+                    slack_id: event.user
+                });
+                await user.save();
+            }
+    }
+    res.json()
 });
 
 slackRoutes.post('/slack/interactive', async (req, res) => {
