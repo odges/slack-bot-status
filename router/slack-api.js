@@ -33,6 +33,7 @@ slackRoutes.post('/slack/events', async (req, res) => {
     //             await user.save();
     //         }
     // }
+    console.log(req.body)
     res.json(req.body)
 });
 
