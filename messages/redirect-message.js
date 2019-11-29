@@ -2,13 +2,14 @@ require('dotenv').config();
 const User = require('../models/User');
 const Question = require('../models/Question');
 
-const redirectMessage = async (channel, quesitonAnswer, user) => {
+const redirectMessage = async (channel, answers, user) => {
     const que = await Question.find({});
     let text = '';
-
-    for (obj of quesitonAnswer){
-        let question = que.filter((element) => element.id === obj.question)
-        text += "* " + question[0].text + ":*\n " + obj.answer + "\n"
+    for (obj of answers){
+        if (obj.text){
+            let question = que.filter((element) => element.id === obj.question)
+            text += "* " + question[0].text + "*\n " + obj.text + "\n"    
+        }
     }
 
     const userObj = await User.find({ slack_id: user.id})

@@ -8,7 +8,8 @@ const redirectMessage = require('../messages/redirect-message');
 const Answers = require('../models/Answer');
 const Status = require('../models/Status');
 
-slackRoutes.post('/slack/actions', (req, res) => {  
+slackRoutes.post('/slack/actions', (req, res) => {
+    // обработчик команд /dailystatus 
     const data = {
         form: {
             channel: req.body.user_id,
@@ -23,6 +24,8 @@ slackRoutes.post('/slack/actions', (req, res) => {
 });
 
 slackRoutes.post('/slack/events', async (req, res) => {
+    // обработчик событий в слаке 
+    // https://api.slack.com/events
     const { event } = req.body;
     switch(event.type){
         case 'member_joined_channel':
@@ -37,7 +40,7 @@ slackRoutes.post('/slack/events', async (req, res) => {
 });
 
 slackRoutes.post('/slack/interactive', async (req, res) => {
-    // интерактивные элементы диалога
+    // обработчик интерактивных сообщений с пользователем 
     const { type } = JSON.parse(req.body.payload);
 
     switch (type){
@@ -48,21 +51,20 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
             const status = new Status({
                 user: db_user[0]._id
             })
-            const quesitonAnswer = new Array;
             const answers = new Array;
-            for (let [key, value] of Object.entries(view.state.values)){
+            for (let [_, value] of Object.entries(view.state.values)){
                 let id = Object.keys(value)[0];
                 let obj = Object.values(value)[0];
-                quesitonAnswer.push({answer: obj.value, question: id})
-                let answer = new Answers({text: obj.value, question: id})
-                await answer.save()
-                answers.push(answer.id)
-                
+                answers.push({text: obj.value, question: id})
             }
-            status.answers.push(...answers)
+            
+            const answer = await Answers.create(answers)
+            const idsAnswer = answer.map((element) => element._id)
+
+            status.answers.push(...idsAnswer)
             await status.save()
 
-            messageRedirect = await redirectMessage('GQV78N4TA', quesitonAnswer, user)
+            messageRedirect = await redirectMessage('GQV78N4TA', answers, user)
             request.post(
                 'https://slack.com/api/chat.postMessage', 
                 {form: messageRedirect},

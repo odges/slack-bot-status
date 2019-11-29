@@ -8,6 +8,14 @@ const schema = new Schema({
   slack_id: {
     type: String,
     required: true
+  },
+  daily_report: {
+    type: Boolean,
+    default: false
+  },
+  on_vacation: {
+    type: Boolean,
+    default: false
   }
 })
 

@@ -21,14 +21,21 @@ app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 app.set('views', 'views')
 app.use(express.static(path.join(__dirname, 'public')))
+
+// таски для ежедневнего оповещения пользователей
 schedule.scheduleJob('30 9 * * 1-5', () => alertAllUsers()); 
+// таск для обновление информации о пользователях из slack
+schedule.scheduleJob('10 9 * * 1-5', () => Initial_user_db())
 
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(bodyParser.json());
 
 app.use('/static', express.static(__dirname + '/public'));
+
+// api для взаимодействия с slack
 app.use(slackRoutes)
+// админка
 app.use(router)
 
 async function start() {
@@ -43,7 +50,6 @@ async function start() {
       app.listen(process.env.PORT || PORT, function() {
         console.log('Bot is listening on port ' + PORT);
       });
-      Initial_user_db();
     } catch (e) {
       console.log(e)
     }

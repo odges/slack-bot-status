@@ -3,9 +3,10 @@ const message = require('../messages/actions-select');
 const request = require("request");
 
 const alertAllUsers = async () => {
-    const users = await User.find()
+    User.update({}, { daily_report: false })
+    const users = await User.find({})
     users.map(async (element) => {
-        console.log(await element)
+        console.log(element)
     //   let data = await {
     //     form: {
     //         channel: element.slack_id,
