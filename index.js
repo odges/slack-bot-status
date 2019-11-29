@@ -10,7 +10,7 @@ const exphbs = require('express-handlebars')
 const path = require('path')
 const router = require('./router/routes')
 const app = express();
-const PORT = 8083;
+const PORT = 8084;
 
 const hbs = exphbs.create({
   defaultLayout: 'main',
@@ -40,7 +40,7 @@ async function start() {
           useFindAndModify: false
         }
       )
-      app.listen(8083, function() {
+      app.listen(process.env.PORT || PORT, function() {
         console.log('Bot is listening on port ' + PORT);
       });
       Initial_user_db();
