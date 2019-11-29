@@ -40,7 +40,7 @@ async function start() {
           useFindAndModify: false
         }
       )
-      app.listen(process.env.PORT || PORT, function() {
+      app.listen(8083, function() {
         console.log('Bot is listening on port ' + PORT);
       });
       Initial_user_db();
