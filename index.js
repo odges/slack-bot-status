@@ -29,7 +29,7 @@ schedule.scheduleJob('30 9 * * 1-5', () => alertAllUsers());
 // таск для обновление информации о пользователях из slack
 schedule.scheduleJob('10 9 * * 1-5', () => Initial_user_db());
 // таск для сообщения отчета сбора статусов
-schedule.scheduleJob('** 10 * * 1-5', () => reportChatStatistic());
+schedule.scheduleJob('00 10 * * 1-5', () => reportChatStatistic());
 
 app.use(bodyParser.urlencoded({extended: true}));
 
