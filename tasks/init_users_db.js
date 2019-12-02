@@ -13,12 +13,13 @@ const Initial_user_db = async () => {
         members.map(async (element)=>{
             let { is_bot, deleted } = element;
             let exist = await User.exists({slack_id: element.id});
-            if ( (!is_bot) && (!exist) && (!deleted) ){
+            if ( (!is_bot) && (!exist) && (!deleted) && (element.id !== 'USLACKBOT') ){
                 let user = new User({
                     slack_id: element.id,
-                    name: element.real_name
+                    name: element.real_name,
+                    mention_name: element.name,
                 })
-                await user.save();    
+                await user.save();
             }
         });
     });

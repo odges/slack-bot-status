@@ -5,6 +5,10 @@ const schema = new Schema({
     type: String,
     required: false
   },
+  mention_name: {
+    type: String,
+    required: false
+  },
   slack_id: {
     type: String,
     required: true
@@ -14,6 +18,10 @@ const schema = new Schema({
     default: false
   },
   on_vacation: {
+    type: Boolean,
+    default: false
+  },
+  subscribe: {
     type: Boolean,
     default: false
   }

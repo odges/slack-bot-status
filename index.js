@@ -6,9 +6,11 @@ const slackRoutes = require('./router/slack-api');
 const Initial_user_db = require('./tasks/init_users_db');
 const schedule = require('node-schedule');
 const alertAllUsers = require('./tasks/dailyAlerts');
-const exphbs = require('express-handlebars')
-const path = require('path')
-const router = require('./router/routes')
+const exphbs = require('express-handlebars');
+const path = require('path');
+const router = require('./router/routes');
+const reportChatStatistic = require('./tasks/reportChat')
+
 const app = express();
 const PORT = 8084;
 
@@ -25,7 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 // таски для ежедневнего оповещения пользователей
 schedule.scheduleJob('30 9 * * 1-5', () => alertAllUsers()); 
 // таск для обновление информации о пользователях из slack
-schedule.scheduleJob('10 9 * * 1-5', () => Initial_user_db())
+schedule.scheduleJob('10 9 * * 1-5', () => Initial_user_db());
+// таск для сообщения отчета сбора статусов
+schedule.scheduleJob('** 10 * * 1-5', () => reportChatStatistic());
 
 app.use(bodyParser.urlencoded({extended: true}));
 

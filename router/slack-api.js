@@ -48,6 +48,10 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
             // данные из диалогового окна
             const { view, user } = JSON.parse(req.body.payload)
             const db_user = await User.find({slack_id: user.id})
+            
+            // обновление пользователя, что он оставил ежедневный отчет
+            await User.updateOne({slack_id: user.id}, { daily_report: false });
+
             const status = new Status({
                 user: db_user[0]._id
             })
@@ -64,7 +68,7 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
             status.answers.push(...idsAnswer)
             await status.save()
 
-            messageRedirect = await redirectMessage('GQV78N4TA', answers, user)
+            messageRedirect = await redirectMessage('GQWTPSTMM', answers, user)
             request.post(
                 'https://slack.com/api/chat.postMessage', 
                 {form: messageRedirect},

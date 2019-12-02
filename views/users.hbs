@@ -1,0 +1,49 @@
+<h2>Пользователи</h2>
+
+{{#if users.length}}
+<table id="myTable">
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="поиск" style="width: -webkit-fill-available">
+    <tr class="header">
+        <th style="width:60%;">Имя</th>
+        <th style="width:40%;">Подписать на ежедневные статусы</th>
+    </tr>
+    <ul>
+    {{#each users}}
+    <tr>
+        <td>{{name}}</td>
+        <td>
+            <form action="/subscribe" method="POST">
+                <input type="text" name="id" value="{{_id}}" hidden >
+                <input type="checkbox" id="{{_id}}" value="true" name="subscribe" style="height: 50px;"{{#if subscribe}} checked="checked" {{/if}}  >
+                <label for="{{_id}}" style="box-sizing: content-box;">  </label>
+                <button type="submit" class="btn">Принять</button>
+            </form>
+        </td>
+    </tr>
+    {{/each}}
+    </ul>
+</table>
+{{else}}
+<p>нет пользователей</p>
+{{/if}}
+
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>
