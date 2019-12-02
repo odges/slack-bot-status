@@ -15,6 +15,13 @@
       <li><a href="/create">Создание</a></li>
       {{/if}}
 
+
+      {{#if users}}
+      <li class="active"><a href="/create">Пользователи</a></li>
+      {{else}}
+      <li><a href="/users">Пользователи</a></li>
+      {{/if}}
+
     </ul>
   </div>
 </nav>
