@@ -24,12 +24,12 @@ app.set('view engine', 'hbs')
 app.set('views', 'views')
 app.use(express.static(path.join(__dirname, 'public')))
 
-// // таски для ежедневнего оповещения пользователей
-// schedule.scheduleJob('30 9 * * 1-5', () => alertAllUsers()); 
-// // таск для обновление информации о пользователях из slack
-// schedule.scheduleJob('10 9 * * 1-5', () => Initial_user_db());
-// // таск для сообщения отчета сбора статусов
-// schedule.scheduleJob('** 10 * * 1-5', () => reportChatStatistic());
+// таски для ежедневнего оповещения пользователей
+schedule.scheduleJob('30 9 * * 1-5', () => alertAllUsers()); 
+// таск для обновление информации о пользователях из slack
+schedule.scheduleJob('10 9 * * 1-5', () => Initial_user_db());
+// таск для сообщения отчета сбора статусов
+schedule.scheduleJob('** 10 * * 1-5', () => reportChatStatistic());
 
 app.use(bodyParser.urlencoded({extended: true}));
 
