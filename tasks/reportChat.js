@@ -5,11 +5,11 @@ const moment = require('moment');
 moment.locale('ru');
 
 const statChatReport = async (participation) => {
-    const usersToReport = await User.find({daily_report: true, subscribe: true})
+    const usersToReport = await User.find({daily_report: true, subscribe: true, on_vacation: false})
     const usersVacation = await User.find({on_vacation: true})
     return await {
         token: process.env.SLACK_AUTH_TOKEN,
-        channel: 'GQWTPSTMM',
+        channel: 'GQV78N4TA',
         blocks: JSON.stringify([
                 {
                     "type": "section",
