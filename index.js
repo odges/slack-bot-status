@@ -45,7 +45,7 @@ app.use(router)
 async function start() {
     try {
       await mongoose.connect(
-        'mongodb://localhost:27017/dailystatus',
+        'mongodb+srv://odges:123restart@cluster0-xvks4.mongodb.net/test?retryWrites=true&w=majority',
         {
           useNewUrlParser: true,
           useFindAndModify: false

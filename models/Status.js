@@ -14,11 +14,6 @@ const schema = new Schema({
   date: {
     type: Date,
     default: Date.now
-  },
-  status: {
-    type: String,
-    required: true,
-    default: 'reported'
   }
 })
 

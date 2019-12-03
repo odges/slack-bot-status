@@ -43,55 +43,67 @@ slackRoutes.post('/slack/events', async (req, res) => {
 slackRoutes.post('/slack/interactive', async (req, res) => {
     // обработчик интерактивных сообщений с пользователем 
     const { type, user } = JSON.parse(req.body.payload);
-
     switch (type){
         case 'view_submission':
             // данные из диалогового окна
             const { view } = JSON.parse(req.body.payload)
-            const db_user = await User.find({slack_id: user.id})
-            
-            // обновление пользователя, что он оставил ежедневный отчет
-            await User.updateOne({slack_id: user.id}, { daily_report: false });
-
-            const status = new Status({
-                user: db_user[0]._id
-            })
-            const answers = new Array;
-            for (let [_, value] of Object.entries(view.state.values)){
-                let id = Object.keys(value)[0];
-                let obj = Object.values(value)[0];
-                answers.push({text: obj.value, question: id})
+            switch (view.callback_id){
+                case 'date_picker_user':
+                    const { private_metadata } = view
+                    let picked_date
+                    for (let [_, value] of Object.entries(view.state.values)){
+                        picked_date = new Date(Object.values(value)[0].selected_date)
+                    }
+                    await User.updateOne({ slack_id: user.id }, {status: private_metadata, date_comeback:picked_date})
+                    break
+                default:
+                    const db_user = await User.find({slack_id: user.id})
+        
+                    // обновление пользователя, что он оставил ежедневный отчет
+                    await User.updateOne({slack_id: user.id}, { daily_report: false });
+        
+                    const status = new Status({
+                        user: db_user[0]._id
+                    })
+                    const answers = new Array;
+                    for (let [_, value] of Object.entries(view.state.values)){
+                        let id = Object.keys(value)[0];
+                        let obj = Object.values(value)[0];
+                        answers.push({text: obj.value, question: id})
+                    }
+                    
+                    const answer = await Answers.create(answers)
+                    const idsAnswer = answer.map((element) => element._id)
+        
+                    status.answers.push(...idsAnswer)
+                    await status.save()
+        
+                    messageRedirect = await redirectMessage('GQV78N4TA', answers, user)
+                    request.post(
+                        'https://slack.com/api/chat.postMessage', 
+                        {form: messageRedirect},
+                        (error, response, body) => res.json()
+                    )
             }
-            
-            const answer = await Answers.create(answers)
-            const idsAnswer = answer.map((element) => element._id)
 
-            status.answers.push(...idsAnswer)
-            await status.save()
-
-            messageRedirect = await redirectMessage('GQV78N4TA', answers, user)
-            request.post(
-                'https://slack.com/api/chat.postMessage', 
-                {form: messageRedirect},
-                (error, response, body) => res.json()
-            )
             break
         case 'block_actions':
+            const { message, channel } = JSON.parse(req.body.payload);
+            request.post(
+                'https://slack.com/api/chat.delete',
+                {
+                    form: {		
+                        token: process.env.SLACK_AUTH_TOKEN,
+                        channel: channel.id,
+                        ts: message.ts,
+                        as_user: true
+                    } 
+                },
+                (error, response, body) => res.json()
+            )
+
             const { trigger_id } = JSON.parse(req.body.payload);
             const actions = JSON.parse(req.body.payload).actions[0]
-            // const { message, channel } = JSON.parse(req.body.payload);
-            // console.log(channel.id, message.ts)
-            // request.post(
-            //     'https://slack.com/api/chat.delete',
-            //     {
-            //         form: {		
-            //             token: process.env.SLACK_AUTH_TOKEN,
-            //             channel: channel.id,
-            //             ts: message.ts
-            //         } 
-            //     },
-            //     (error, response, body) => console.log(response)
-            // )
             switch (actions.selected_option.value){
                 case 'same_last_time':
                     const current_user = await User.find({slack_id: user.id})
@@ -101,7 +113,7 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
                     request.post(
                         'https://slack.com/api/views.open', 
                         { form: { trigger_id, ...Modal_with_init } }, 
-                        (error, response, body) => console.log(response)
+                        (error, response, body) => res.json()
                     );
                     break
                 case 'give_status':
@@ -113,13 +125,14 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
                     );
                     break
                 case 'skip':
-                    console.log(user)
-                    let message = { form: { trigger_id, ...datepicker_slack } }
-                    console.log(message)
+                case 'vacation':
+                case 'sick':
+                    datepicker = datepicker_slack(actions.selected_option.value)
+                    const datepicker_modal = { form: { trigger_id, ...datepicker } }
                     request.post(
-                        'https://slack.com/api/views.open', 
-                        message, 
-                        (error, response, body) => console.log(response)
+                        'https://slack.com/api/views.open',
+                        datepicker_modal,
+                        (error, response, body) => res.json()
                     );
                     break
                 default:

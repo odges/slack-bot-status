@@ -24,6 +24,14 @@ const schema = new Schema({
   subscribe: {
     type: Boolean,
     default: false
+  },
+  date_comeback: {
+    type: Date,
+    default: null
+  },
+  status: {
+    type: String,
+    default: null
   }
 })
 
