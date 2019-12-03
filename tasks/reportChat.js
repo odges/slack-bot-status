@@ -6,7 +6,7 @@ moment.locale('ru');
 
 const statChatReport = async (participation) => {
     const usersToReport = await User.find({daily_report: true, subscribe: true})
-
+    const usersVacation = await User.find({on_vacation: true})
     return await {
         token: process.env.SLACK_AUTH_TOKEN,
         channel: 'GQWTPSTMM',
@@ -31,6 +31,13 @@ const statChatReport = async (participation) => {
                         "type": "mrkdwn",
                         "text": `${usersToReport.length ? `Не оставили статус: ${usersToReport.map((user)=> `@${user.mention_name}`)}` : 'Все оставили отчет, так держать!' }`
                     },
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${usersVacation.length ? `В отпуске: ${usersVacation.map((user)=> `@${user.mention_name}`)}` : '' }`
+                    },
                 }
             ])
     }
@@ -38,7 +45,7 @@ const statChatReport = async (participation) => {
 
 const reportChatStatistic = async () => {
     const numberUsers = await User.count({on_vacation: false, subscribe: true})
-    const reported  = await User.count({daily_report: false, subscribe: true})
+    const reported  = await User.count({daily_report: false, subscribe: true, on_vacation: false})
     const participation = Math.floor((reported/numberUsers) * 100)
     const message = await statChatReport(participation);
     request.post(
