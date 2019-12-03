@@ -6,6 +6,7 @@
     <tr class="header">
         <th style="width:60%;">Имя</th>
         <th style="width:40%;">Подписать на ежедневные статусы</th>
+        <th>Статус</th>
     </tr>
     <ul>
     {{#each users}}
@@ -18,6 +19,9 @@
                 <label for="{{_id}}" style="box-sizing: content-box;">  </label>
                 <button type="submit" class="btn">Принять</button>
             </form>
+        </td>
+        <td>
+          {{#if status}} {{status}} {{else}} Активный {{/if}}
         </td>
     </tr>
     {{/each}}
