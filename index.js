@@ -10,7 +10,7 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 const router = require('./router/routes');
 const reportChatStatistic = require('./tasks/reportChat')
-
+reportChatStatistic()
 const app = express();
 const PORT = 8084;
 

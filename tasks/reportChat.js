@@ -6,10 +6,12 @@ moment.locale('ru');
 
 const statChatReport = async (participation) => {
     const usersToReport = await User.find({daily_report: true, subscribe: true, on_vacation: false})
-    const usersVacation = await User.find({on_vacation: true})
+    const usersVacation = await User.find({status : "vacation"})
+    const sick = await User.find({status : "sick"})
+    const skip = await User.find({status : "skip"})
     return await {
         token: process.env.SLACK_AUTH_TOKEN,
-        channel: 'GQV78N4TA',
+        channel: 'GQWTPSTMM',
         blocks: JSON.stringify([
                 {
                     "type": "section",
@@ -36,9 +38,23 @@ const statChatReport = async (participation) => {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": `${usersVacation.length ? `В отпуске: ${usersVacation.map((user)=> `@${user.mention_name}`)}` : '' }`
+                        "text": `${usersVacation.length ? `В отпуске: ${usersVacation.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
                     },
-                }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${sick.length ? `Больничный: ${sick.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
+                    },
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${skip.length ? `Отгул: ${skip.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
+                    },
+                },
             ])
     }
 }
