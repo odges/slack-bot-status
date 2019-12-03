@@ -7,6 +7,7 @@ const User = require('../models/User');
 const redirectMessage = require('../messages/redirect-message');
 const Answers = require('../models/Answer');
 const Status = require('../models/Status');
+const datepicker_slack = require('../messages/datepicker-slack');
 
 slackRoutes.post('/slack/actions', (req, res) => {
     // обработчик команд /dailystatus 
@@ -41,12 +42,12 @@ slackRoutes.post('/slack/events', async (req, res) => {
 
 slackRoutes.post('/slack/interactive', async (req, res) => {
     // обработчик интерактивных сообщений с пользователем 
-    const { type } = JSON.parse(req.body.payload);
+    const { type, user } = JSON.parse(req.body.payload);
 
     switch (type){
         case 'view_submission':
             // данные из диалогового окна
-            const { view, user } = JSON.parse(req.body.payload)
+            const { view } = JSON.parse(req.body.payload)
             const db_user = await User.find({slack_id: user.id})
             
             // обновление пользователя, что он оставил ежедневный отчет
@@ -68,7 +69,7 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
             status.answers.push(...idsAnswer)
             await status.save()
 
-            messageRedirect = await redirectMessage('GQWTPSTMM', answers, user)
+            messageRedirect = await redirectMessage('GQV78N4TA', answers, user)
             request.post(
                 'https://slack.com/api/chat.postMessage', 
                 {form: messageRedirect},
@@ -76,19 +77,49 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
             )
             break
         case 'block_actions':
+            const { trigger_id } = JSON.parse(req.body.payload);
             const actions = JSON.parse(req.body.payload).actions[0]
-            switch (actions.selected_option.value) {
+            // const { message, channel } = JSON.parse(req.body.payload);
+            // console.log(channel.id, message.ts)
+            // request.post(
+            //     'https://slack.com/api/chat.delete',
+            //     {
+            //         form: {		
+            //             token: process.env.SLACK_AUTH_TOKEN,
+            //             channel: channel.id,
+            //             ts: message.ts
+            //         } 
+            //     },
+            //     (error, response, body) => console.log(response)
+            // )
+            switch (actions.selected_option.value){
                 case 'same_last_time':
-                    break
-                case 'skip':
+                    const current_user = await User.find({slack_id: user.id})
+                    const lastStatus = await Status.find({user: current_user[0]._id}).sort({"date": -1}).limit(1)
+                    const answers = await Answers.find({'_id': { $in: lastStatus[0].answers}})
+                    const Modal_with_init = await modalQuestions(answers);
+                    request.post(
+                        'https://slack.com/api/views.open', 
+                        { form: { trigger_id, ...Modal_with_init } }, 
+                        (error, response, body) => console.log(response)
+                    );
                     break
                 case 'give_status':
-                    const { trigger_id } = JSON.parse(req.body.payload);
                     const Modal = await modalQuestions();
                     request.post(
                         'https://slack.com/api/views.open', 
                         { form: { trigger_id, ...Modal } }, 
                         (error, response, body) => res.json()
+                    );
+                    break
+                case 'skip':
+                    console.log(user)
+                    let message = { form: { trigger_id, ...datepicker_slack } }
+                    console.log(message)
+                    request.post(
+                        'https://slack.com/api/views.open', 
+                        message, 
+                        (error, response, body) => console.log(response)
                     );
                     break
                 default:

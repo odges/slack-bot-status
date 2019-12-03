@@ -25,14 +25,6 @@ const message = {
                         {
                             "text": {
                                 "type": "plain_text",
-                                "text": "Пропустить",
-                                "emoji": true
-                            },
-                            "value": "skip"
-                        },
-                        {
-                            "text": {
-                                "type": "plain_text",
                                 "text": "Тоже самое что вчера",
                                 "emoji": true
                             },
@@ -45,7 +37,31 @@ const message = {
                                 "emoji": true
                             },
                             "value": "give_status"
-                        }
+                        },
+                        {
+                            "text": {
+                                "type": "plain_text",
+                                "text": "В отпуске",
+                                "emoji": true
+                            },
+                            "value": "vacation"
+                        },
+                        {
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Отгул",
+                                "emoji": true
+                            },
+                            "value": "skip"
+                        },
+                        {
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Больничный",
+                                "emoji": true
+                            },
+                            "value": "sick"
+                        },
                     ]
                 }
             }

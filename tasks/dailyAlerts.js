@@ -3,7 +3,7 @@ const message = require('../messages/actions-select');
 const request = require("request");
 
 const alertAllUsers = async () => {
-    User.update({}, { daily_report: true })
+    await User.updateMany({}, { daily_report: true })
     const users = await User.find({ subscribe: true })
 
     users.map(async (element) => {
