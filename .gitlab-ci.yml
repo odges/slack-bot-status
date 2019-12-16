@@ -23,7 +23,7 @@ Release:
     - cp -r ./$REPO $PROD_DIR
     - pushd $PROD_DIR
     - source ~/.bash_profile
-    - cd /home/digitalwand.ru/web/$PROJECT/api
+    - cd /home/digitalwand.ru/web/$SERVICE/api
     - nvm use $NPM
     - source ./.env
     - npm install
