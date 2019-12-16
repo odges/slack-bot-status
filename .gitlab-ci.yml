@@ -3,6 +3,7 @@ variables:
   REPO: "slack-daily-status"
   GITLAB_CI: "false"
   SERVICE: statusbot
+  NPM: 'v12.12.0'
 
 
 stages:
@@ -21,6 +22,11 @@ Release:
     - ls -l
     - cp -r ./$REPO $PROD_DIR
     - pushd $PROD_DIR
+    - source ~/.bash_profile
+    - cd /home/digitalwand.ru/web/$PROJECT/api
+    - nvm use $NPM
+    - source ./.env
+    - npm install
     - sudo /usr/bin/systemctl restart statusbot
   only:
     - master
