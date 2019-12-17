@@ -38,14 +38,14 @@ app.use(bodyParser.json());
 app.use('/static', express.static(__dirname + '/public'));
 
 // api для взаимодействия с slack
-app.use(slackRoutes)
+app.use('/api',slackRoutes)
 // админка
-app.use(router)
+app.use('/api',router)
 
 async function start() {
     try {
       await mongoose.connect(
-        'mongodb+srv://odges:123restart@cluster0-xvks4.mongodb.net/test?retryWrites=true&w=majority',
+        'mongodb://sbot:bluirxwm7@127.0.0.1/statusbot?retryWrites=true&w=majority',
         {
           useNewUrlParser: true,
           useFindAndModify: false

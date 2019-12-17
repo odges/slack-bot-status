@@ -1,0 +1,32 @@
+variables:
+  PROD_DIR: "/home/digitalwand.ru/web/statusbot/api"
+  REPO: "slack-daily-status"
+  GITLAB_CI: "false"
+  SERVICE: statusbot
+  NPM: 'v12.12.0'
+
+
+stages:
+  - release
+
+Release:
+  stage: release
+  tags:
+    - statusbot
+  script:
+    - cp $PROD_DIR/.env .env
+    - if [ -d "$PROD_DIR.old" ]; then rm -rf "$PROD_DIR.old"; fi
+    - mv "$PROD_DIR" "$PROD_DIR.old"
+    - cd .. 
+    - echo $PWD
+    - ls -l
+    - cp -r ./$REPO $PROD_DIR
+    - pushd $PROD_DIR
+    - source ~/.bash_profile
+    - cd /home/digitalwand.ru/web/$SERVICE/api
+    - nvm use $NPM
+    - source ./.env
+    - npm install
+    - sudo /usr/bin/systemctl restart statusbot
+  only:
+    - master
