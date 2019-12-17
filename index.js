@@ -38,9 +38,9 @@ app.use(bodyParser.json());
 app.use('/static', express.static(__dirname + '/public'));
 
 // api для взаимодействия с slack
-app.use(slackRoutes)
+app.use('/api',slackRoutes)
 // админка
-app.use(router)
+app.use('/api',router)
 
 async function start() {
     try {
