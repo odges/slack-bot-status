@@ -1,6 +1,6 @@
 <nav class="blue darken-4">
   <div class="nav-wrapper">
-    <a href="/" class="brand-logo">Вопросы бота</a>
+    <a href="/api" class="brand-logo">Вопросы бота</a>
     <ul id="nav-mobile" class="right hide-on-med-and-down">
 
       {{#if isIndex}}
@@ -10,16 +10,16 @@
       {{/if}}
 
       {{#if isCreate}}
-      <li class="active"><a href="/create">Создание</a></li>
+      <li class="active"><a href="/api/create">Создание</a></li>
       {{else}}
-      <li><a href="/create">Создание</a></li>
+      <li><a href="/api/create">Создание</a></li>
       {{/if}}
 
 
       {{#if users}}
-      <li class="active"><a href="/create">Пользователи</a></li>
+      <li class="active"><a href="/api/create">Пользователи</a></li>
       {{else}}
-      <li><a href="/users">Пользователи</a></li>
+      <li><a href="/api/users">Пользователи</a></li>
       {{/if}}
 
     </ul>
