@@ -23,7 +23,7 @@ app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 app.set('views', 'views')
 app.use(express.static(path.join(__dirname, 'public')))
-
+Initial_user_db()
 // таски для ежедневнего оповещения пользователей
 schedule.scheduleJob('30 15 * * 1-5', () => alertAllUsers()); 
 // таск для обновление информации о пользователях из slack
