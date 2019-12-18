@@ -33,7 +33,7 @@ router.post('/create', async (req, res) => {
 
     const question = new Question({required, text})
     await question.save()
-    res.redirect('/')
+    res.redirect('/api/')
 })
 
 router.get('/users', async (req, res) => {
@@ -50,7 +50,7 @@ router.post('/subscribe', async (req, res) => {
   const { id, subscribe } = req.body
 
   await Users.updateOne({_id: id}, { subscribe });
-  res.redirect('/users')
+  res.redirect('/api/users')
 })
 
 module.exports = router
