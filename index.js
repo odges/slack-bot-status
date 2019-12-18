@@ -23,7 +23,7 @@ app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 app.set('views', 'views')
 app.use(express.static(path.join(__dirname, 'public')))
-Initial_user_db()
+
 // таски для ежедневнего оповещения пользователей
 schedule.scheduleJob('30 15 * * 1-5', () => alertAllUsers()); 
 // таск для обновление информации о пользователях из slack
@@ -38,9 +38,11 @@ app.use(bodyParser.json());
 app.use('/static', express.static(__dirname + '/public'));
 
 // api для взаимодействия с slack
-app.use('/api',slackRoutes)
+app.use('/api', slackRoutes)
 // админка
-app.use('/api',router)
+app.use('/api', router)
+app.use('/api', router)
+app.use('/', (_, res) => res.redirect('/api'))
 
 async function start() {
     try {
