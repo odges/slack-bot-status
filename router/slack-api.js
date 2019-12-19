@@ -3,10 +3,8 @@ const message = require('../messages/actions-select');
 const modalQuestions = require('../messages/modal-slack');
 const slackRoutes = Router()
 const request = require("request");
-const User = require('../models/User');
+const { Answer, Status, User } = require('../models')
 const redirectMessage = require('../messages/redirect-message');
-const Answers = require('../models/Answer');
-const Status = require('../models/Status');
 const datepicker_slack = require('../messages/datepicker-slack');
 
 slackRoutes.post('/slack/actions', (req, res) => {
@@ -72,7 +70,7 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
                         answers.push({text: obj.value, question: id})
                     }
                     
-                    const answer = await Answers.create(answers)
+                    const answer = await Answer.create(answers)
                     const idsAnswer = answer.map((element) => element._id)
         
                     status.answers.push(...idsAnswer)
@@ -108,7 +106,7 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
                 case 'same_last_time':
                     const current_user = await User.find({slack_id: user.id})
                     const lastStatus = await Status.find({user: current_user[0]._id}).sort({"date": -1}).limit(1)
-                    const answers = await Answers.find({'_id': { $in: lastStatus[0].answers}})
+                    const answers = await Answer.find({'_id': { $in: lastStatus[0].answers}})
                     const Modal_with_init = await modalQuestions(answers);
                     request.post(
                         'https://slack.com/api/views.open', 

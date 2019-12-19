@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const { User } = require('../models')
 const message = require('../messages/actions-select');
 const request = require("request");
 

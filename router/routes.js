@@ -1,7 +1,5 @@
-const Status  = require('../models/Status')
 const { Router } = require('express')
-const Question = require('../models/Question')
-const Users = require('../models/User')
+const { Question, User } = require('../models')
 const router = Router()
 
 
@@ -13,7 +11,7 @@ router.get('/', async (req, res) => {
       isIndex: true,
       questions
     })
-  })
+})
   
 router.get('/create', (req, res) => {
     res.render('createQuestion', {
@@ -38,7 +36,7 @@ router.post('/create', async (req, res) => {
 })
 
 router.get('/users', async (req, res) => {
-  const users = await Users.find({})
+  const users = await User.find({})
 
   res.render('users', {
       title: 'Пользователи',
@@ -50,7 +48,7 @@ router.get('/users', async (req, res) => {
 router.post('/subscribe', async (req, res) => {
   const { id, subscribe } = req.body
 
-  await Users.updateOne({_id: id}, { subscribe });
+  await User.updateOne({_id: id}, { subscribe });
   res.redirect('/api/users')
 })
 

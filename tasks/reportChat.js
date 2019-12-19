@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const { User } = require('../models')
 const request = require("request");
 const moment = require('moment');
 

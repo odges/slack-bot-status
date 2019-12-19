@@ -10,6 +10,17 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 const router = require('./router/routes');
 const reportChatStatistic = require('./tasks/reportChat')
+const schema = require('./graphql');
+const graphqlHTTP = require('express-graphql');
+
+let root = {
+  postTitle: () => {
+    return 'Build a Simple GraphQL Server With Express and NodeJS';
+  },
+  blogTitle: () => {
+    return 'scotch.io';
+  }
+};
 
 const app = express();
 const PORT = 8084;
@@ -30,6 +41,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 // // таск для сообщения отчета сбора статусов
 // schedule.scheduleJob('45 15 * * 1-5', () => reportChatStatistic());
 
+app.use('/api/graph', graphqlHTTP({
+  schema,
+  rootValue: root,
+  graphiql: true
+})); 
+
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(bodyParser.json());
@@ -40,15 +57,13 @@ app.use('/static', express.static(__dirname + '/public'));
 app.use('/api', slackRoutes)
 // админка
 app.use('/api', router)
-app.use('/api', router)
-app.use('/', (_, res) => res.redirect('/api'))
 
 app.use('/', (_, res) => res.redirect('/api'))
 
 async function start() {
     try {
       await mongoose.connect(
-        'mongodb://sbot:bluirxwm7@127.0.0.1/statusbot?retryWrites=true&w=majority',
+        'mongodb://localhost:27017/statusbot?retryWrites=true&w=majority',
         { useNewUrlParser: true, useFindAndModify: false }
       )
       app.listen(process.env.PORT || PORT, function() {
