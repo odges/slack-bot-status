@@ -9,51 +9,31 @@ const statChatReport = async (participation) => {
     const usersVacation = await User.find({status : "vacation"})
     const sick = await User.find({status : "sick"})
     const skip = await User.find({status : "skip"})
+    const colors = ['#ff4d4d', '#6699ff', '#00e6e6', '#80ffe5']
     return await {
         token: process.env.SLACK_AUTH_TOKEN,
-        channel: 'GQWTPSTMM',
-        blocks: JSON.stringify([
+        channel: 'GQV78N4TA',
+        text: `*Отчет о статусах* ${moment().format('MMMM Do YYYY, h:mm:ss a')} `,
+        attachments: JSON.stringify([
                 {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `*Отчет о статусах* ${moment().format('MMMM Do YYYY, h:mm:ss a')} `
-                    }
+                    "color": "#ff4d4d",
+                    "text": `*Участие в опросе приняли:* ${participation}%`,
                 },
                 {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `*Участие в опросе приняли:* ${participation}%`
-                    },
+                    "color": "#6699ff",
+                    "text": `${usersToReport.length ? `Не оставили статус: ${usersToReport.map((user)=> `@${user.mention_name}`)}` : 'Все оставили отчет, так держать!' }`
                 },
                 {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `${usersToReport.length ? `Не оставили статус: ${usersToReport.map((user)=> `@${user.mention_name}`)}` : 'Все оставили отчет, так держать!' }`
-                    },
+                    "color": "#00e6e6",
+                    "text": `${usersVacation.length ? `В отпуске: ${usersVacation.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
                 },
                 {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `${usersVacation.length ? `В отпуске: ${usersVacation.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
-                    },
+                    "color": "#80ffe5",
+                    "text": `${sick.length ? `Больничный: ${sick.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
                 },
                 {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `${sick.length ? `Больничный: ${sick.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
-                    },
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `${skip.length ? `Отгул: ${skip.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
-                    },
+                    "color": "#00e6e6",
+                    "text": `${skip.length ? `Отгул: ${skip.map((user)=> `@${user.mention_name} `+ ` (${moment(user.date_comeback).format('MMMM Do')}) `)}` : '' }`
                 },
             ])
     }
@@ -66,7 +46,8 @@ const reportChatStatistic = async () => {
     const message = await statChatReport(participation);
     request.post(
         'https://slack.com/api/chat.postMessage', 
-        {form: message}
+        {form: message},
+        (req, res) => console.log(res)
     )
 }
  
