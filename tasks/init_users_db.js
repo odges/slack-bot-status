@@ -1,6 +1,6 @@
 require('dotenv').config();
 const request = require("request");
-const User = require('../models/User');
+const { User } = require('../models')
 
 const Initial_user_db = async () => {
     const data = {
@@ -24,6 +24,5 @@ const Initial_user_db = async () => {
         });
     });
 }
-
 
 module.exports = Initial_user_db;

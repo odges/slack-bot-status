@@ -1,6 +1,5 @@
 require('dotenv').config();
-const User = require('../models/User');
-const Question = require('../models/Question');
+const { Question, User } = require('../models')
 
 const redirectMessage = async (channel, answers, user) => {
     const que = await Question.find({});

@@ -10,7 +10,18 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 const router = require('./router/routes');
 const reportChatStatistic = require('./tasks/reportChat')
-reportChatStatistic()
+const schema = require('./graphql');
+const graphqlHTTP = require('express-graphql');
+
+let root = {
+  postTitle: () => {
+    return 'Build a Simple GraphQL Server With Express and NodeJS';
+  },
+  blogTitle: () => {
+    return 'scotch.io';
+  }
+};
+
 const app = express();
 const PORT = 8084;
 
@@ -23,13 +34,18 @@ app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 app.set('views', 'views')
 app.use(express.static(path.join(__dirname, 'public')))
-
 // // таски для ежедневнего оповещения пользователей
 // schedule.scheduleJob('30 15 * * 1-5', () => alertAllUsers()); 
-// таск для обновление информации о пользователях из slack
-schedule.scheduleJob('10 9 * * 1-5', () => Initial_user_db());
+// // таск для обновление информации о пользователях из slack
+// schedule.scheduleJob('10 9 * * 1-5', () => Initial_user_db());
 // // таск для сообщения отчета сбора статусов
 // schedule.scheduleJob('45 15 * * 1-5', () => reportChatStatistic());
+
+app.use('/api/graph', graphqlHTTP({
+  schema,
+  rootValue: root,
+  graphiql: true
+})); 
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -41,17 +57,14 @@ app.use('/static', express.static(__dirname + '/public'));
 app.use('/api', slackRoutes)
 // админка
 app.use('/api', router)
-app.use('/api', router)
+
 app.use('/', (_, res) => res.redirect('/api'))
 
 async function start() {
     try {
       await mongoose.connect(
-        'mongodb://sbot:bluirxwm7@127.0.0.1/statusbot?retryWrites=true&w=majority',
-        {
-          useNewUrlParser: true,
-          useFindAndModify: false
-        }
+        'mongodb://localhost:27017/statusbot?retryWrites=true&w=majority',
+        { useNewUrlParser: true, useFindAndModify: false }
       )
       app.listen(process.env.PORT || PORT, function() {
         console.log('Bot is listening on port ' + PORT);
@@ -60,5 +73,5 @@ async function start() {
       console.log(e)
     }
 }
-  
+
 start()

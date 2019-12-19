@@ -1,6 +1,5 @@
 require('dotenv').config();
-const Question = require('../models/Question');
-const Answer = require('../models/Answer');
+const { Question } = require('../models')
 
 const modalQuestions = async (answers = []) => {
 	const questions = await Question.find({})
