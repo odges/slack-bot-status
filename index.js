@@ -37,9 +37,11 @@ app.use(bodyParser.json());
 app.use('/static', express.static(__dirname + '/public'));
 
 // api для взаимодействия с slack
-app.use('/api',slackRoutes)
+app.use('/api', slackRoutes)
 // админка
-app.use('/api',router)
+app.use('/api', router)
+app.use('/api', router)
+app.use('/', (_, res) => res.redirect('/api'))
 
 app.use('/', (_, res) => res.redirect('/api'))
 
