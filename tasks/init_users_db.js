@@ -25,5 +25,4 @@ const Initial_user_db = async () => {
     });
 }
 
-
 module.exports = Initial_user_db;

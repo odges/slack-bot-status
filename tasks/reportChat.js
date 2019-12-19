@@ -11,7 +11,7 @@ const statChatReport = async (participation) => {
     const skip = await User.find({status : "skip"})
     return await {
         token: process.env.SLACK_AUTH_TOKEN,
-        channel: 'GQWTPSTMM',
+        channel: 'GQV78N4TA',
         blocks: JSON.stringify([
                 {
                     "type": "section",

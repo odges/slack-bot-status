@@ -78,7 +78,7 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
                     status.answers.push(...idsAnswer)
                     await status.save()
         
-                    messageRedirect = await redirectMessage('GQWTPSTMM', answers, user)
+                    messageRedirect = await redirectMessage('GQV78N4TA', answers, user)
                     request.post(
                         'https://slack.com/api/chat.postMessage', 
                         {form: messageRedirect},
