@@ -15,7 +15,8 @@ const UserType = new GraphQLObjectType({
         on_vacation: { type: GraphQLBoolean },
         subscribe: { type: GraphQLBoolean },
         date_comeback: { type: GraphQLString },
-        status: { type: GraphQLString }
+        status: { type: GraphQLString },
+        link_ava: { type: GraphQLString}
     })
 });
 

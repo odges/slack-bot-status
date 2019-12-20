@@ -5,11 +5,11 @@ const moment = require('moment');
 moment.locale('ru');
 
 const statChatReport = async (participation) => {
-    const usersToReport = await User.find({daily_report: true, subscribe: true, on_vacation: false})
+    const usersToReport = await User.find({daily_report: true, subscribe: true, status: 'work'})
     const usersVacation = await User.find({status : "vacation"})
     const sick = await User.find({status : "sick"})
     const skip = await User.find({status : "skip"})
-    const colors = ['#ff4d4d', '#6699ff', '#00e6e6', '#80ffe5']
+
     return await {
         token: process.env.SLACK_AUTH_TOKEN,
         channel: 'GQV78N4TA',
@@ -21,7 +21,7 @@ const statChatReport = async (participation) => {
                 },
                 {
                     "color": "#6699ff",
-                    "text": `${usersToReport.length ? `Не оставили статус: ${usersToReport.map((user)=> `@${user.mention_name}`)}` : 'Все оставили отчет, так держать!' }`
+                    "text": `${usersToReport.length ? `Не оставили статус: ${usersToReport.map((user)=> `@${user.mention_name}`)} ` : 'Все оставили отчет, так держать!' }`
                 },
                 {
                     "color": "#00e6e6",
@@ -46,8 +46,7 @@ const reportChatStatistic = async () => {
     const message = await statChatReport(participation);
     request.post(
         'https://slack.com/api/chat.postMessage', 
-        {form: message},
-        (req, res) => console.log(res)
+        {form: message} 
     )
 }
  

@@ -11,12 +11,13 @@ const redirectMessage = async (channel, answers, user) => {
             text.push({title: question[0].text, text: obj.text})
         }
     }
-    const userObj = await User.find({ slack_id: user.id})
+    const userObj = await User.findOne({ slack_id: user.id})
     return {
         token: process.env.SLACK_AUTH_TOKEN,
         channel: 'GQV78N4TA',
         text: 'Пользователь оставил статус',
-        username: userObj[0].name,
+        icon_url: userObj.link_ava,
+        username: userObj.name,
         attachments: JSON.stringify(
             text.map( (el, counter) => { return { "color": colors[counter], ...el } } )
         )

@@ -87,18 +87,18 @@ slackRoutes.post('/slack/interactive', async (req, res) => {
             break
         case 'block_actions':
             const { message, channel } = JSON.parse(req.body.payload);
-            request.post(
-                'https://slack.com/api/chat.delete',
-                {
-                    form: {		
-                        token: process.env.SLACK_AUTH_TOKEN,
-                        channel: channel.id,
-                        ts: message.ts,
-                        as_user: true
-                    } 
-                },
-                (error, response, body) => res.json()
-            )
+            // request.post(
+            //     'https://slack.com/api/chat.delete',
+            //     {
+            //         form: {		
+            //             token: process.env.SLACK_AUTH_TOKEN,
+            //             channel: channel.id,
+            //             ts: message.ts,
+            //             as_user: true
+            //         } 
+            //     },
+            //     (error, response, body) => res.json()
+            // )
 
             const { trigger_id } = JSON.parse(req.body.payload);
             const actions = JSON.parse(req.body.payload).actions[0]

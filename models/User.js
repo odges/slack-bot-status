@@ -31,6 +31,10 @@ const schema = new Schema({
   },
   status: {
     type: String,
+    default: 'work'
+  },
+  link_ava: {
+    type: String,
     default: null
   }
 })
