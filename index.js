@@ -8,11 +8,11 @@ const path = require('path');
 const router = require('./router/routes');
 const schema = require('./graphql');
 const graphqlHTTP = require('express-graphql');
-const init_tasks = require('./tasks');
-const init_db_users = require('./tasks/init_users_db');
+const init_tasks = require('./tasks')
+
 const app = express();
 const PORT = 8084;
-init_db_users();
+
 // init_tasks();
 
 const hbs = exphbs.create({
