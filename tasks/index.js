@@ -4,7 +4,6 @@ const reportChatStatistic= require('./reportChat');
 const schedule = require('node-schedule');
 
 const init_tasks = async () => {
-    console.log('work')
     // таски для ежедневнего оповещения пользователей
     schedule.scheduleJob('30 15 * * 1-5', () => alertAllUsers()); 
     // таск для обновление информации о пользователях из slack

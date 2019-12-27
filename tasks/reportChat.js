@@ -12,7 +12,7 @@ const statChatReport = async (participation) => {
 
     return await {
         token: process.env.SLACK_AUTH_TOKEN,
-        channel: 'GQV78N4TA',
+        channel: 'GQWTPSTMM',
         text: `*Отчет о статусах* ${moment().format('MMMM Do YYYY, h:mm:ss a')} `,
         attachments: JSON.stringify([
                 {
