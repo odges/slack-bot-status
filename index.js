@@ -3,27 +3,31 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const slackRoutes = require('./router/slack-api');
-const exphbs = require('express-handlebars');
-const path = require('path');
-const router = require('./router/routes');
 const schema = require('./graphql');
 const graphqlHTTP = require('express-graphql');
 const init_tasks = require('./tasks')
 
 const app = express();
 const PORT = 8084;
-
+// фоновые задачи 
 // init_tasks();
 
-const hbs = exphbs.create({
-  defaultLayout: 'main',
-  extname: 'hbs'
-})
 
-app.engine('hbs', hbs.engine)
-app.set('view engine', 'hbs')
-app.set('views', 'views')
-app.use(express.static(path.join(__dirname, 'public')))
+// админка 
+// const exphbs = require('express-handlebars');
+// const path = require('path');
+// const router = require('./router/routes');
+// const hbs = exphbs.create({
+//   defaultLayout: 'main',
+//   extname: 'hbs'
+// })
+// app.engine('hbs', hbs.engine)
+// app.set('view engine', 'hbs')
+// app.set('views', 'views')
+// app.use(express.static(path.join(__dirname, 'public')))
+// app.use('/static', express.static(__dirname + '/public'));
+// app.use('/api', router)
+// app.use('/', (_, res) => res.redirect('/api'))
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -50,15 +54,8 @@ app.use('/api/graph', graphqlHTTP({
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(bodyParser.json());
-
-app.use('/static', express.static(__dirname + '/public'));
-
 // api для взаимодействия с slack
 app.use('/api', slackRoutes)
-// админка
-app.use('/api', router)
-
-app.use('/', (_, res) => res.redirect('/api'))
 
 async function start() {
     try {
