@@ -3,7 +3,7 @@ const { Question, User } = require('../models')
 
 const redirectMessage = async (channel, answers, user) => {
     const que = await Question.find({});
-    const colors = ['#ff4d4d', '#6699ff', '#00e6e6', '#80ffe5']
+    const colors = ['#5ca2a5', '#3e8083', '#b02f30', '#466796', '#305283']
     let text = [];
     for (obj of answers){
         if (obj.text){
