@@ -10,9 +10,8 @@ const init_tasks = require('./tasks')
 const app = express();
 const PORT = 8084;
 // фоновые задачи 
-// init_tasks();
-
-
+init_tasks();
+ 
 // админка 
 // const exphbs = require('express-handlebars');
 // const path = require('path');

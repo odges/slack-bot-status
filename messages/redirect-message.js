@@ -14,7 +14,7 @@ const redirectMessage = async (channel, answers, user) => {
     const userObj = await User.findOne({ slack_id: user.id})
     return {
         token: process.env.SLACK_AUTH_TOKEN,
-        channel: 'GQWTPSTMM',
+        channel: 'GPGM1J28G',
         text: 'Пользователь оставил статус',
         icon_url: userObj.link_ava,
         username: userObj.name,
