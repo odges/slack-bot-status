@@ -32,7 +32,7 @@ const RootQuery = new GraphQLObjectType({
                         else resolve(res)
                     })
                 })
-            }            
+            }
         },
         statuses: {
             type: new GraphQLList(StatusType),
@@ -106,6 +106,25 @@ const RootQuery = new GraphQLObjectType({
                         {_id: args.id},
                         { "$set": { required: args.required} },
                         { "new": true }
+                    ).exec((err, res) => {
+                        if(err) reject(err)
+                        else resolve(res)
+                    })
+                })
+            }
+        },
+        userUpdateDailyReport: {
+            type: UserType,
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLString)},
+                daily_report: {type: new GraphQLNonNull(GraphQLBoolean)}
+            },
+            resolve(parentValue, args){
+                return new Promise((resolve, reject) => {
+                    User.findOneAndUpdate(
+                        {"_id": args.id},
+                        { "$set": { daily_report: args.daily_report} },
+                        {"new": true}
                     ).exec((err, res) => {
                         if(err) reject(err)
                         else resolve(res)
