@@ -40,6 +40,20 @@ const RootQuery = new GraphQLObjectType({
 				return Status.find({})
 			}
         },
+        statusesByDate: {
+            type: new GraphQLList(StatusType),
+            args: {
+                date: {type: new GraphQLNonNull(GraphQLString)}
+            },
+			resolve(_, args){
+                const date = new Date(args.date)
+				return Status.find(
+                    { "date": 
+                        { "$gte": date, "$lt": new Date(date.getTime() + 60 * 60 * 24 * 1000) }
+                    }
+                )
+			}
+        },
         answers: {
             type: new GraphQLList(AnswerType),
 			resolve(){
