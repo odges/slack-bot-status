@@ -49,7 +49,7 @@ const RootQuery = new GraphQLObjectType({
                 const date = new Date(args.date)
 				return Status.find(
                     { "date": 
-                        { "$gte": date, "$lt": new Date(date.getTime() + 60 * 60 * 24 * 1000) }
+                        { "$gte": date.getTime(), "$lt": new Date(date.getTime() + 60 * 60 * 24 * 1000).getTime() }
                     }
                 )
 			}
