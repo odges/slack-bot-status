@@ -50,7 +50,10 @@ const RootQuery = new GraphQLObjectType({
                     { "date": 
                         { "$gte": new Date(Number(args.date)), "$lt": new Date(Number(args.date) + 60 * 60 * 24 * 1000) }
                     }
-                )
+                ).exec((err, res) => {
+                    if(err) reject(err)
+                    else resolve(res)
+                })
 			}
         },
         answers: {
