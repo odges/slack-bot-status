@@ -37,7 +37,7 @@ const modalQuestions = async (answers = []) => {
 						"text": element.text,
 						"emoji": true
 					},
-					"optional": element.required
+					"optional": !element.required
 				}
 			})
 		})
