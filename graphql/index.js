@@ -1,5 +1,5 @@
 const graphql = require('graphql');
-const { GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLBoolean, GraphQLString, GraphQLNonNull } = graphql;
+const { GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLBoolean, GraphQLString, GraphQLNonNull, GraphQLInt } = graphql;
 const { Question, Answer, Status, User } = require('../models')
 const UserType = require('./user')
 const StatusType = require('./status')
@@ -46,12 +46,18 @@ const RootQuery = new GraphQLObjectType({
                 date: {type: new GraphQLNonNull(GraphQLString)}
             },
 			resolve(_, args){
-                const date = new Date(args.date)
-				return Status.find(
-                    { "date": 
-                        { "$gte": date.getTime(), "$lt": new Date(date.getTime() + 60 * 60 * 24 * 1000).getTime() }
-                    }
-                )
+                return new Promise((resolve, reject) => {
+                    console.log(new Date(Number(args.date)))
+                    Status.find(
+                        { "date": 
+                            { "$gte": new Date(Number(args.date)), "$lt": new Date(Number(args.date) + 60 * 60 * 24 * 1000) }
+                        }
+                    ).exec((err, res) => {
+                        console.log(res)
+                        if(err) reject(err)
+                        else resolve(res)
+                    })
+                })
 			}
         },
         answers: {
