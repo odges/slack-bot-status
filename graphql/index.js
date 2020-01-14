@@ -1,5 +1,5 @@
 const graphql = require('graphql');
-const { GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLBoolean, GraphQLString, GraphQLNonNull, GraphQLInt } = graphql;
+const { GraphQLSchema, GraphQLObjectType, GraphQLList, GraphQLBoolean, GraphQLID, GraphQLString, GraphQLNonNull, GraphQLInt } = graphql;
 const { Question, Answer, Status, User } = require('../models')
 const UserType = require('./user')
 const StatusType = require('./status')
@@ -44,7 +44,7 @@ const RootQuery = new GraphQLObjectType({
             type: new GraphQLList(StatusType),
             args: {
                 date: {type: new GraphQLNonNull(GraphQLString)},
-                usersExclude: {type:new GraphQLList(GraphQLString)}
+                usersExclude: {type:new GraphQLList(GraphQLID)}
             },
 			resolve(_, args){
                 return new Promise((resolve, reject) => {

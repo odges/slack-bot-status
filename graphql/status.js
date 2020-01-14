@@ -17,7 +17,7 @@ const StatusType = new GraphQLObjectType({
         answers: { 
             type: new GraphQLList(AnswerType),
             args: {
-                questionIdsExclude: { type: new GraphQLList(GraphQLString) }
+                questionIdsExclude: { type: new GraphQLList(GraphQLID) }
             },    
             resolve(parent, args) {
                 return Answer.find({_id: {$in: parent.answers}, question: {$nin: args.questionIdsExclude}})
