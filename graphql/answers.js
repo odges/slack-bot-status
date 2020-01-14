@@ -1,5 +1,5 @@
 const graphql = require('graphql');
-const { GraphQLObjectType, GraphQLString, GraphQLID } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLList } = graphql;
 const QuestionType = require('./question');
 const Question = require('../models/Question');
 
@@ -12,7 +12,6 @@ const AnswersType = new GraphQLObjectType({
             resolve(parent, _) {
                 return Question.findOne({ _id: parent.question._id })
             }
- 
         },
     })
 });

@@ -16,9 +16,11 @@ const StatusType = new GraphQLObjectType({
         },
         answers: { 
             type: new GraphQLList(AnswerType),
-            args: { answers: { type: GraphQLID } }, 
-            resolve(parent, _) {
-                return Answer.find({_id: {$in: parent.answers}})
+            args: {
+                questionIdsExclude: { type: new GraphQLList(GraphQLString) }
+            },    
+            resolve(parent, args) {
+                return Answer.find({_id: {$in: parent.answers}, question: {$nin: args.questionIdsExclude}})
             }
         },
         date: { type: GraphQLString }

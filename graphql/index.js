@@ -43,17 +43,20 @@ const RootQuery = new GraphQLObjectType({
         statusesByDate: {
             type: new GraphQLList(StatusType),
             args: {
-                date: {type: new GraphQLNonNull(GraphQLString)}
+                date: {type: new GraphQLNonNull(GraphQLString)},
+                usersExclude: {type:new GraphQLList(GraphQLString)}
             },
 			resolve(_, args){
                 return new Promise((resolve, reject) => {
-                    console.log(new Date(Number(args.date)))
                     Status.find(
                         { "date": 
-                            { "$gte": new Date(Number(args.date)), "$lt": new Date(Number(args.date) + 60 * 60 * 24 * 1000) }
+                            { 
+                                "$gte": new Date(Number(args.date)), 
+                                "$lt": new Date(Number(args.date) + 60 * 60 * 24 * 1000),
+                                "user": { '$nin': args.usersExclude }
+                            }
                         }
                     ).exec((err, res) => {
-                        console.log(res)
                         if(err) reject(err)
                         else resolve(res)
                     })
