@@ -4,7 +4,9 @@ const { User } = require('../models')
 
 const checkERP = async () => {
     const url_auth = 'https://inside.digitalwand.ru/availabilityCalendar/rest/v1/auth';
-    const url_calendar = `https://inside.digitalwand.ru/availabilityCalendar/rest/v1/?date=${moment().format('YYYY-MM-DD')}`
+    // const url_calendar = `https://inside.digitalwand.ru/availabilityCalendar/rest/v1/?date=${moment().format('YYYY-MM-DD')}`
+    // a.martinov@ddemo.ru p.seligor@ddemo.ru
+    const url_calendar = `https://inside.digitalwand.ru/availabilityCalendar/rest/v1/?date=2020-01-9&email=a.martinov@ddemo.ru`
     const data = { email:"a.volkov@digitalwand.ru", password:"bGYYLCwiP4bi1G" }
     const auth_response = await axios.post(url_auth, data).then((response) => response)
 
@@ -31,6 +33,7 @@ const checkERP = async () => {
                     status = "skip"
                     break
             }
+
             await User.updateOne({email: email }, {date_comeback, status })
         }
     }
