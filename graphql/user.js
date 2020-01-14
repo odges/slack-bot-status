@@ -16,7 +16,8 @@ const UserType = new GraphQLObjectType({
         subscribe: { type: GraphQLBoolean },
         date_comeback: { type: GraphQLString },
         status: { type: GraphQLString },
-        link_ava: { type: GraphQLString}
+        link_ava: { type: GraphQLString},
+        email: {type: GraphQLString}
     })
 });
 

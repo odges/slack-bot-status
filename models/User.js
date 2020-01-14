@@ -36,6 +36,10 @@ const schema = new Schema({
   link_ava: {
     type: String,
     default: null
+  },
+  email: {
+    type: String,
+    default: null
   }
 })
 

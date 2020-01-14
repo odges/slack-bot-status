@@ -22,10 +22,10 @@ const Initial_user_db = async () => {
                     link_ava: element.profile.image_72
                 })
                 await user.save();
-            }else{ 
+            }else{
+                
                 if (exist){
-                    let user = await User.updateOne({slack_id: element.id}, { link_ava: element.profile.image_72 })
-                    user.save()
+                    await User.updateOne({slack_id: element.id}, { link_ava: element.profile.image_72, email: element.profile.email  })
                 }
             }
         });
