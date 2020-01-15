@@ -14,7 +14,7 @@ const init_tasks = async () => {
     schedule.scheduleJob('30 10 * * 1-5', () => reportChatStatistic());
     // такс для сброса прогресса по опросам 
     schedule.scheduleJob('30 5 * * 1-5', () => dailyDischarge());
-    // Initial_user_db()
+    schedule.scheduleJob('20 10 * * 1-5', () => dailyDischarge());
     checkERP()
 }
 
