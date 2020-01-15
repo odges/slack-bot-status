@@ -11,9 +11,17 @@ const RootQuery = new GraphQLObjectType({
 	fields: {
 		users: {
             type: new GraphQLList(UserType),
-			resolve(){
-				return User.find({})
-			}
+            args: {
+                subscribe: {type: GraphQLBoolean}
+            },
+			resolve(_, args){
+                const { subscribe } = args;
+                const query = User.find({});
+                if (typeof(subscribe) === 'boolean'){
+                    return query.where('subscribe').equals(subscribe)
+                }
+                return query            
+            }
         },
         updateUserSub: {
             type: UserType,
