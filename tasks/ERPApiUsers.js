@@ -33,7 +33,7 @@ const checkERP = async () => {
                     break
             }
 
-            await User.updateOne({email: email }, {date_comeback, status })
+            await User.updateOne( { email }, { date_comeback, status } )
         }
     }
 }

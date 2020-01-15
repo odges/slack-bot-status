@@ -14,8 +14,8 @@ const init_tasks = async () => {
     schedule.scheduleJob('30 10 * * 1-5', () => reportChatStatistic());
     // такс для сброса прогресса по опросам 
     schedule.scheduleJob('30 5 * * 1-5', () => dailyDischarge());
-    schedule.scheduleJob('20 10 * * 1-5', () => dailyDischarge());
-    checkERP()
+    // такс для проверки через api erp в календаре отсутствий 
+    schedule.scheduleJob('20 10 * * 1-5', () => checkERP());
 }
 
 module.exports = init_tasks
