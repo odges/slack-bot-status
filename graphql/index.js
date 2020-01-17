@@ -42,6 +42,25 @@ const RootQuery = new GraphQLObjectType({
                 })
             }
         },
+        usersStatusUpdate: {
+            type: UserType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                status: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(parentValue, args){
+                return new Promise( (resolve, reject) => {
+                    User.findOneAndUpdate(
+                        { "_id": args.id },
+                        { "$set": { status: args.status } },
+                        { "new": true }
+                    ).exec((err, res) => {
+                        if(err) reject(err)
+                        else resolve(res)
+                    })
+                })
+            }
+        },
         statuses: {
             type: new GraphQLList(StatusType),
 			resolve(){

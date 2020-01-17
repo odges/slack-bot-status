@@ -16,7 +16,8 @@ const checkERP = async () => {
 
         const response = await axios.get(url_calendar, config ).then((response) => response).catch(function (error) {
             console.log(error);
-        });        
+        });
+
         for (i=0; i < response.data.length; i++){
             const { email, event_type, event_end } = response.data[i]
             const date_comeback = moment(event_end).valueOf()

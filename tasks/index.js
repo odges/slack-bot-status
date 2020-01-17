@@ -16,6 +16,7 @@ const init_tasks = async () => {
     schedule.scheduleJob('30 5 * * 1-5', () => dailyDischarge());
     // такс для проверки через api erp в календаре отсутствий 
     schedule.scheduleJob('20 10 * * 1-5', () => checkERP());
+    checkERP()
 }
 
 module.exports = init_tasks
